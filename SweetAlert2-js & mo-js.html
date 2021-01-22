@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+    <head>
+       <style>
+           button{
+               padding: 10px;
+               font-size: 20px;
+               background-color: greenyellow;
+               border-radius: 50%;
+           } 
+           button:hover{
+               background-color: white;
+           }
+           .A {
+               border-color: aqua;
+           }
+           .C{
+               border-color: cornflowerblue;
+           }
+           .D{
+               border-color: darkgrey;
+           }
+           .E{
+               border-color: mediumblue;
+           }
+       </style>
+       
+        <body>
+           <button class="A">Try Me 1</button>
+           <button class="B">Try Me 2</button>
+           <button class="C">Try Me 3</button>
+           <button class="D">Try Me 4</button>
+           <button class="E">Try Me 5</button>
+           
+           <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+           <script src="https://cdn.jsdelivr.net/mojs/latest/mo.min.js"></script>
+
+            <script>
+                document.querySelector(".A").addEventListener('click', function(){
+                    Swal.fire(
+                        'Good job!',
+                        'Done',
+                        'success');
+                });
+                    
+                document.querySelector(".B").addEventListener('click', function(){
+                    Swal.fire({
+                        title: '<strong>Do you like it?</strong>',
+                        icon: 'info',
+                        showCloseButton: true,
+                        showCancelButton: true,
+                        focusConfirm: true,
+                        confirmButtonText:'Great!',
+                        cancelButtonText:'Noo!',})
+                });
+                
+                document.querySelector(".C").addEventListener('click', function(){
+                    Swal.fire({
+                        title: 'Do you want to save the changes?',
+                        showDenyButton: true,
+                        showCancelButton: true,
+                        confirmButtonText: `Save`,
+                        denyButtonText: `Don't save`,
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            Swal.fire('Saved!', '', 'success')
+                        } else if (result.isDenied) {
+                            Swal.fire('Your changes are not saved!', '', 'info')
+                        }
+                    })
+                });
+                
+                document.querySelector(".D").addEventListener('click', function(){
+                    let timerInterval
+                    Swal.fire({
+                        title: 'Please wait !!!',
+                        html: 'Download will start in <b></b> milliseconds.',
+                        timer: 2000,
+                        timerProgressBar: true,
+                        backdrop: "linear-gradient(yellow, orange)",
+                        didOpen: () => {
+                        Swal.showLoading()
+                        timerInterval = setInterval(() => {
+                            const content = Swal.getContent()
+                            if (content) {
+                                const b = content.querySelector('b')
+                            if (b) {
+                                b.textContent = Swal.getTimerLeft()
+                            }
+                        }
+                    },10)
+                },
+                        willClose: () => {
+                        clearInterval(timerInterval)
+                        }
+                }).then((result) => {
+                        if (result.dismiss === Swal.DismissReason.timer) {
+                        console.log('I was closed by the timer')
+                        }
+                    })
+                });
+                
+                document.querySelector(".E").addEventListener('click', function(){
+                    Swal.mixin({
+                        input: 'text',
+                        confirmButtonText: 'Next &rarr;',
+                        showCancelButton: true,
+                        progressSteps: [1, 2, 3]
+                    }).queue([
+                        {
+                            title: 'Question 1',
+                            text: 'Write your date of birth!'
+                        },
+                        {
+                            title: 'Question 2',
+                            text: 'Write your month of birth!'
+                        },
+                        {
+                            title: 'Question 3',
+                            text: 'Write your year of birth!'
+                        }
+                    ]).then((result) => {
+                        if (result.value) {
+                            const answers = JSON.stringify(result.value)
+                            Swal.fire({
+                                title: 'All done!',
+                                html: `
+                                    Your Date Birth:
+                                    <pre><code>${answers}</code></pre>`,
+                                confirmButtonText: 'Lovely!'
+                            })
+                        }
+                    }) 
+                });
+                
+                const circle = new mojs.Shape({
+                    left:0,
+                    top:0,
+                    strokeWidth:8,
+                    fill:'none',
+                    radius:80,
+                    scale:{0:1},
+                    opacity:{10:0},
+                    shape:'circle',
+                    stroke:'pink',
+                    strokeWidth:8,
+                    fill:'none',
+                    duration:500,
+                });
+                
+                const brust = new mojs.Burst({
+                    count:10,
+                    left:0,
+                    top:0,
+                    children:{
+                        shape:['circle','rect','curve'],
+                        fill:['yellow','red','green'],
+                        degreeShift:'rand(-360, 360)',
+                        delay:'stagger(0,30)'
+                    },
+                    duration:400
+                });
+                
+                document.onclick = (e) => {
+                    const position = {
+                        x: e.pageX,
+                        y: e.pageY
+                    }
+                    
+                    circle.tune(position);
+                    circle.replay();
+                    brust.tune(position);
+                    brust.replay();
+                }
+            </script>
+            
+        </body>
+    </head>
+</html>
